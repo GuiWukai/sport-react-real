@@ -8,7 +8,8 @@ export default class Table extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: []
+      data: [],
+      currentSelect: []
     }
     this.getData()
   }
@@ -26,6 +27,8 @@ export default class Table extends Component {
   }
 
   render() {
+
+    console.log(this.state)
 
     const data = this.state.data;
 
@@ -65,6 +68,11 @@ export default class Table extends Component {
       getTdProps={(state, rowInfo, column, instance) => {
         return {
           onClick: (e, handleOriginal) => {
+            this.setState(function(state) {
+              return {
+               currentSelect: state.currentSelect.concat(rowInfo.row)
+              }
+            })
             console.log('A Td Element was clicked!')
             console.log('it produced this event:', e)
             console.log('It was in this column:', column)
