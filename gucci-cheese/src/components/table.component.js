@@ -37,14 +37,14 @@ export default class Table extends Component {
         Header: 'Rank',
         accessor: 'Rank'
       }, {
+        Header: 'Position',
+        accessor: 'PositionAbbreviation'
+      }, {
         Header: 'First Name',
         accessor: 'FirstName'
       }, {
         Header: 'Last Name',
         accessor: 'LastName'
-      }, {
-        Header: 'Position',
-        accessor: 'PositionAbbreviation'
       }, {
         Header: 'Team Name',
         accessor: 'TeamName'
@@ -52,27 +52,70 @@ export default class Table extends Component {
         Header: 'Weight',
         accessor: 'WeightPounds'
       }, {
+        Header: 'Height',
+        accessor: 'HeightFeet'
+      }, {
         Header: 'Assists',
-        accessor: 'StatisticDetails.Assists'
+        accessor: 'StatisticDetails.AssistsPerGame'
       }, {
-        Header: 'Age',
-        accessor: 'Age'
+        Header: 'Rebound',
+        accessor: 'StatisticDetails.ReboundsTotalPerGame'
       }, {
-        Header: 'Age',
-        accessor: 'Age'
-      }
+        Header: 'Points',
+        accessor: 'StatisticDetails.PointsPerGame'
+      }, {
+        Header: 'Steals',
+        accessor: 'StatisticDetails.StealsPerGame'
+      }, {
+        Header: 'FG%',
+        accessor: 'StatisticDetails.FieldGoalsPercentage'
+      }, {
+        expander: true,
+        Header: () => <strong>More</strong>,
+        Expander: ({ isExpanded, ...rest }) =>
+            <div className = "extend-button">
+            {isExpanded
+                ? <span className="extend-button__logo">-</span>
+                : <span className="extend-button__logo">+</span>}
+            </div>,
+        style: {
+            cursor: "pointer",
+            fontSize: 25,
+            padding: "0",
+            textAlign: "center",
+            userSelect: "none"
+        }
+    }  
     ]
 
     return (
-      <ReactTable data={data} columns={columns} 
+      <ReactTable 
+      data={data} 
+      columns={columns} 
+      SubComponent={row => {
+        console.log(row)
+        return (
+            <div>
+              <div>{row.row["_original"].Age}</div>
+            </div>                      
+        );
+      }}
       getTdProps={(state, rowInfo, column, instance) => {
         return {
           onClick: (e, handleOriginal) => {
             this.setState(function(state) {
-              return {
-               currentSelect: state.currentSelect.concat(rowInfo.row)
+              var row = rowInfo.row
+              if(row.active !== undefined || row.active === false){
+                row.active = true   
+                return {
+                  currentSelect: state.currentSelect.concat(row)
+                }             
+              }else{
+                row.active = false
               }
-            })
+              
+            }
+          )
             console.log('A Td Element was clicked!')
             console.log('it produced this event:', e)
             console.log('It was in this column:', column)
@@ -89,8 +132,9 @@ export default class Table extends Component {
             }
           }
         }
-      }}
-      />
+      }
+    }
+    />
         
       
       ) 
