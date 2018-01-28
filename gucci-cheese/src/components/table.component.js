@@ -3,6 +3,8 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import 'whatwg-fetch';
 import {RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend} from 'recharts';
+import Total from './total.component.js'
+// import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
 var rd3 = require('recharts');
 
 export default class Table extends Component {
@@ -72,7 +74,7 @@ export default class Table extends Component {
         Header: 'FG%',
         accessor: 'StatisticDetails.FieldGoalsPercentage'
 
-        
+
       }, {
         Header: 'Blocks',
         accessor: 'StatisticDetails.BlockedShotsPerGame'
@@ -92,16 +94,16 @@ export default class Table extends Component {
             textAlign: "center",
             userSelect: "none"
         }
-    }  
+    }
     ]
 
     return (
-      <ReactTable 
+      <ReactTable
       defaultPageSize={100}
       resizable={false}
       pageSizeOptions={[100, 200, 500]}
-      data={data} 
-      columns={columns} 
+      data={data}
+      columns={columns}
       SubComponent={row => {
         console.log(row)
 
@@ -122,18 +124,24 @@ export default class Table extends Component {
         ]
         console.log(cdata)
         return (
-            <div>
-              <div>
-                  <RadarChart outerRadius={90} width={730} height={250} data={cdata}>
-                    <PolarGrid />
-                    <PolarAngleAxis dataKey="subject" />
-                    <PolarRadiusAxis angle={30} domain={[0, 100]} />
-                    <Radar name={row.row["_original"].FirstName} dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
-                    <Legend />
-                  </RadarChart>
-                </div>
-              <div>{row.row["_original"].Age}</div>
-            </div>                      
+            // <div>
+            //   <div>
+            //       <RadarChart outerRadius={90} width={730} height={250} data={cdata}>
+            //         <PolarGrid />
+            //         <PolarAngleAxis dataKey="subject" />
+            //         <PolarRadiusAxis angle={30} domain={[0, 100]} />
+            //         <Radar name='Stats per game' dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+            //         <Legend />
+            //       </RadarChart>
+            //     </div>
+            //   <div>
+            //
+            //   </div>
+            // </div>
+            <Total
+              data = {cdata}
+            />
+
         );
       }}
       getTdProps={(state, rowInfo, column, instance) => {
@@ -142,14 +150,14 @@ export default class Table extends Component {
             this.setState(function(state) {
               var row = rowInfo.row
               if(row.active !== undefined || row.active === false){
-                row.active = true   
+                row.active = true
                 return {
                   currentSelect: state.currentSelect.concat(row)
-                }             
+                }
               }else{
                 row.active = false
               }
-              
+
             }
           )
             console.log('A Td Element was clicked!')
@@ -171,8 +179,8 @@ export default class Table extends Component {
       }
     }
     />
-        
-      
-      ) 
+
+
+      )
     }
 }
