@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import 'whatwg-fetch';
-import {RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend} from 'recharts';
-var rd3 = require('recharts');
+import PlayerStats from '../components/playerStats.component';
+import numeral from 'numeral';
 
 export default class Table extends Component {
 
@@ -18,7 +18,7 @@ export default class Table extends Component {
 
   getData() {
     fetch('http://conu.astuce.media/api/sports/basketball/gfx/statistic/person/ranking.json' +
-        '?IncludeLinks=false&RoundId=14&Stat=Points&Take=500').then((response) => {
+        '?IncludeLinks=true&RoundId=14&Stat=Points&Take=500').then((response) => {
       return response.json()
     }).then((json) => {
       console.log(json)
@@ -34,50 +34,81 @@ export default class Table extends Component {
 
     const data = this.state.data;
 
-    const columns = [
+    const basketballcolumns = [
       {
         Header: 'Rank',
-        accessor: 'Rank'
+        accessor: 'Rank',
+        minWidth: 40
       }, {
         Header: 'Position',
-        accessor: 'PositionAbbreviation'
+        accessor: 'PositionAbbreviation',
+        minWidth: 60
       }, {
         Header: 'First Name',
-        accessor: 'FirstName'
+        accessor: 'FirstName',
+        minWidth: 70
       }, {
         Header: 'Last Name',
-        accessor: 'LastName'
+        accessor: 'LastName',
+        minWidth: 70
       }, {
         Header: 'Team Name',
-        accessor: 'TeamName'
+        accessor: 'TeamName',
+        minWidth: 70
       }, {
         Header: 'Weight',
-        accessor: 'WeightPounds'
+        accessor: 'WeightPounds',
+        minWidth: 70
       }, {
         Header: 'Height',
-        accessor: 'HeightFeet'
+        accessor: 'HeightFeet',
+        minWidth: 70
       }, {
         Header: 'Assists',
-        accessor: 'StatisticDetails.AssistsPerGame'
+        accessor: 'StatisticDetails.AssistsPerGame',
+        minWidth: 70
       }, {
         Header: 'Rebound',
-        accessor: 'StatisticDetails.ReboundsTotalPerGame'
+        accessor: 'StatisticDetails.ReboundsTotalPerGame',
+        minWidth: 70
       }, {
         Header: 'Points',
-        accessor: 'StatisticDetails.PointsPerGame'
+        accessor: 'StatisticDetails.PointsPerGame',
+        minWidth: 70
       }, {
         Header: 'Steals',
-        accessor: 'StatisticDetails.StealsPerGame'
-      }, {
-        Header: 'FG%',
-        accessor: 'StatisticDetails.FieldGoalsPercentage'
-
-        
-      }, {
+        accessor: 'StatisticDetails.StealsPerGame',
+        minWidth: 70
+      },{
         Header: 'Blocks',
-        accessor: 'StatisticDetails.BlockedShotsPerGame'
+        accessor: 'StatisticDetails.BlockedShotsPerGame',
+        minWidth: 70
+      },{
+        Header: 'FG%',
+        accessor: 'StatisticDetails.FieldGoalsPercentage',
+        minWidth: 70,
+        Cell : props => <span>{(props.value === 1)?('1.000'):(numeral(props.value).format('.000'))}</span>      
       }, {
+        Header: '3PT%',
+        accessor: 'StatisticDetails.ThreePointFieldGoalsPercentage',
+        minWidth: 70,
+        Cell : props => <span>{(props.value === 1)?('1.000'):(numeral(props.value).format('.000'))}</span>              
+      },{
+        Header: 'FT%',
+        accessor: 'StatisticDetails.FreeThrowsPercentage',
+        minWidth: 70,
+        Cell : props => <span>{(props.value === 1)?('1.000'):(numeral(props.value).format('.000'))}</span>             
+      },{
+        Header: 'Plus/Minus',
+        accessor: 'StatisticDetails.PlusMinus',
+        minWidth: 70
+      },{
+        Header: 'Turnovers',
+        accessor: 'StatisticDetails.TurnoversPerGame',
+        minWidth: 70
+      },{
         expander: true,
+        minWidth: 70,
         Header: () => <strong>More</strong>,
         Expander: ({ isExpanded, ...rest }) =>
             <div className = "extend-button">
@@ -97,43 +128,17 @@ export default class Table extends Component {
 
     return (
       <ReactTable 
+      headerClassName = 'header'
+      className = '-striped'
       defaultPageSize={100}
       resizable={false}
       pageSizeOptions={[100, 200, 500]}
       data={data} 
-      columns={columns} 
+      columns={basketballcolumns} 
       SubComponent={row => {
         console.log(row)
-
-        var blocks = row.row["_original"].StatisticDetails.BlockedShotsPerGame*100/3;
-        var points = row.row["_original"].StatisticDetails.PointsPerGame*100/31;
-        var steals = row.row["_original"].StatisticDetails.StealsPerGame*100/2.5;
-        var assists = row.row["_original"].StatisticDetails.AssistsPerGame*100/10.5;
-        var fg = row.row["_original"].StatisticDetails.FieldGoalsPercentage*100;
-        var rebounds = row.row["_original"].StatisticDetails.ReboundsTotalPerGame*100/16;
-
-        var cdata = [
-          { subject: 'Points', A: points, fullMark: 40 },
-          { subject: 'Rebounds', A: rebounds, fullMark: 20 },
-          { subject: 'Assists', A: assists, fullMark: 12 },
-          { subject: 'FG%', A: fg, fullMark: 1 },
-          { subject: 'Steal', A: steals, fullMark: 3 },
-          { subject: 'Blocks', A: blocks, fullMark: 3 },
-        ]
-        console.log(cdata)
         return (
-            <div>
-              <div>
-                  <RadarChart outerRadius={90} width={730} height={250} data={cdata}>
-                    <PolarGrid />
-                    <PolarAngleAxis dataKey="subject" />
-                    <PolarRadiusAxis angle={30} domain={[0, 100]} />
-                    <Radar name={row.row["_original"].FirstName} dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
-                    <Legend />
-                  </RadarChart>
-                </div>
-              <div>{row.row["_original"].Age}</div>
-            </div>                      
+          <PlayerStats row = {row}/>                    
         );
       }}
       getTdProps={(state, rowInfo, column, instance) => {
@@ -152,17 +157,6 @@ export default class Table extends Component {
               
             }
           )
-            console.log('A Td Element was clicked!')
-            console.log('it produced this event:', e)
-            console.log('It was in this column:', column)
-            console.log('It was in this row:', rowInfo)
-            console.log('It was in this table instance:', instance)
-
-            // IMPORTANT! React-Table uses onClick internally to trigger
-            // events like expanding SubComponents and pivots.
-            // By default a custom 'onClick' handler will override this functionality.
-            // If you want to fire the original onClick handler, call the
-            // 'handleOriginal' function.
             if (handleOriginal) {
               handleOriginal()
             }
