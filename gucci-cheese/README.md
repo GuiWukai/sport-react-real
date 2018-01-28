@@ -1,3 +1,5 @@
+## Below are the dependencies that you need to create a React Application. This README is provided by Facebook and not by the developers at echosport
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
