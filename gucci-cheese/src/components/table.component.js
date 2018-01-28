@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import 'whatwg-fetch';
+import {RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend} from 'recharts';
+var rd3 = require('recharts');
 
 export default class Table extends Component {
 
@@ -16,7 +18,7 @@ export default class Table extends Component {
 
   getData() {
     fetch('http://conu.astuce.media/api/sports/basketball/gfx/statistic/person/ranking.json' +
-        '?IncludeLinks=false&RoundId=14&Stat=Points&Take=200').then((response) => {
+        '?IncludeLinks=false&RoundId=14&Stat=Points&Take=500').then((response) => {
       return response.json()
     }).then((json) => {
       console.log(json)
@@ -69,6 +71,11 @@ export default class Table extends Component {
       }, {
         Header: 'FG%',
         accessor: 'StatisticDetails.FieldGoalsPercentage'
+
+        
+      }, {
+        Header: 'Blocks',
+        accessor: 'StatisticDetails.BlockedShotsPerGame'
       }, {
         expander: true,
         Header: () => <strong>More</strong>,
@@ -90,12 +97,41 @@ export default class Table extends Component {
 
     return (
       <ReactTable 
+      defaultPageSize={100}
+      resizable={false}
+      pageSizeOptions={[100, 200, 500]}
       data={data} 
       columns={columns} 
       SubComponent={row => {
         console.log(row)
+
+        var blocks = row.row["_original"].StatisticDetails.BlockedShotsPerGame*100/3;
+        var points = row.row["_original"].StatisticDetails.PointsPerGame*100/31;
+        var steals = row.row["_original"].StatisticDetails.StealsPerGame*100/2.5;
+        var assists = row.row["_original"].StatisticDetails.AssistsPerGame*100/10.5;
+        var fg = row.row["_original"].StatisticDetails.FieldGoalsPercentage*100;
+        var rebounds = row.row["_original"].StatisticDetails.ReboundsTotalPerGame*100/16;
+
+        var cdata = [
+          { subject: 'Points', A: points, fullMark: 40 },
+          { subject: 'Rebounds', A: rebounds, fullMark: 20 },
+          { subject: 'Assists', A: assists, fullMark: 12 },
+          { subject: 'FG%', A: fg, fullMark: 1 },
+          { subject: 'Steal', A: steals, fullMark: 3 },
+          { subject: 'Blocks', A: blocks, fullMark: 3 },
+        ]
+        console.log(cdata)
         return (
             <div>
+              <div>
+                  <RadarChart outerRadius={90} width={730} height={250} data={cdata}>
+                    <PolarGrid />
+                    <PolarAngleAxis dataKey="subject" />
+                    <PolarRadiusAxis angle={30} domain={[0, 100]} />
+                    <Radar name={row.row["_original"].FirstName} dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+                    <Legend />
+                  </RadarChart>
+                </div>
               <div>{row.row["_original"].Age}</div>
             </div>                      
         );
