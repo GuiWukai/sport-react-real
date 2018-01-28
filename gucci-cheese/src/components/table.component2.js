@@ -15,9 +15,8 @@ export default class Table extends Component {
   }
 
   getData() {
-    fetch('http://conu.astuce.media/api/sports/basketball/gfx/statistic/person/ranking.json' +
-        '?IncludeLinks=false&RoundId=14&Stat=Points&Take=200').then((response) => {
-      return response.json()
+    fetch('http://conu.astuce.media/api/sports/football/person/stats?Coverage=Season&Take=300&Skip=0&affiliation=17435833f1ed42848320a80f013bbb3f&season=84f210d08e644c6e89e4a80f013cf46b&OrderBy=-Goals&callback=myCallback').then((response) => {
+        return response.json()
     }).then((json) => {
       console.log(json)
       this.setState({data: json})
