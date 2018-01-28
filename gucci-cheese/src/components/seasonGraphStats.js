@@ -14,7 +14,7 @@ export default class SeasonGraph extends Component {
         var ta = row.row["_original"].StatisticDetails.Assists
 
         var data = [
-            {name: 'GP', 'Stats/Season': gamesplayed, amt: 2400},
+            {name: 'GP', 'Stats/Season': gamesplayed, amt: 20},
             {name: 'FTM','Stats/Season': ftm, amt: 2210},
             {name: '3PM', 'Stats/Season': tpm, amt: 2290},
             {name: 'Rebounds', 'Stats/Season': tr, amt: 2000},

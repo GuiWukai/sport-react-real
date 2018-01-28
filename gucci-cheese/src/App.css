@@ -9,3 +9,6 @@ html {
 .ReactTable .rt-thead .rt-th {
   font-weight: bold !important;
 }
+.recharts-polar-radius-axis {
+  display: none;
+}

@@ -42,7 +42,7 @@ export default class PlayerStats extends Component {
                     <RadarChart outerRadius={90} width={400} height={250} data={cdata}>
                         <PolarGrid/>
                         <PolarAngleAxis dataKey="subject"/>
-                        <PolarRadiusAxis angle={30} domain={[0, 100]}/>
+                        <PolarRadiusAxis angle={90} domain={[0, 100]}/>
                         <Radar
                             name='Stats/Game'
                             dataKey="A"
